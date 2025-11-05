@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SpotifyLogin from "./SpotifyLogin";
+import SpotifyLogin from "./SpotifyLogin.jsx";
 
 export default function App() {
   const [token, setToken] = useState(null);
