@@ -1,7 +1,7 @@
 import React from "react";
 
 const CLIENT_ID = "8eafb21898ad4584a990e71f2e2327cc";
-const REDIRECT_URI = "https://faksapp-35376630.web.app/"; // npr. https://myapp.web.app/
+const REDIRECT_URI = "https://faksapp-35376630-47413.web.app/"; // npr. https://myapp.web.app/
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
 const RESPONSE_TYPE = "code";
 
