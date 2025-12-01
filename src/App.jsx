@@ -9,7 +9,7 @@ export default function App() {
     const code = new URLSearchParams(window.location.search).get("code");
     if (code) {
       // Klic Firebase funkcije za pridobitev access tokena
-      fetch(`https://YOUR_FIREBASE_FUNCTION_URL/spotifyAuth?code=${code}`)
+      fetch(`https://us-central1-faksapp-35376630-47413.cloudfunctions.net/spotifyAuth?code=${code}`)
         .then(res => res.json())
         .then(data => {
           setToken(data.access_token);
