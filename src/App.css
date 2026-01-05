@@ -1,42 +1,200 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+body {
+    font-family: sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
   }
-}
+  
+  .profile-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
 
-.card {
-  padding: 2em;
-}
+  .profile-name {
+    font-weight: bold;
+  }
+  
+  .logout-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 
-.read-the-docs {
-  color: #888;
-}
+  .search-bar-container {
+    margin-bottom: 20px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+  }
+  
+  .navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  }
+  
+  .navigation button {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .navigation button.active {
+    border-bottom: 2px solid #1db954;
+    font-weight: bold;
+  }
+  
+  .main-content .content-title {
+      font-size: 1.5em;
+      margin-bottom: 1em;
+  }
+  
+  .list {
+      list-style: none;
+      padding: 0;
+  }
+  
+  .list-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+  }
+  
+  .list-item-index {
+      font-weight: bold;
+      margin-right: 15px;
+  }
+  
+  .list-item-image {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+      border-radius: 5px;
+  }
+  
+  .artist-image {
+      border-radius: 50%;
+  }
+  
+  .track-details {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1; /* Allow track details to take up available space */
+  }
+  
+  .track-name {
+      font-weight: bold;
+  }
+  
+  .track-artist {
+      color: #666;
+  }
+  
+  .genre-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+  }
+  
+  .genre-item {
+      list-style: none;
+      background-color: #1db954;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 15px;
+  }
+
+  .global-section {
+    margin-bottom: 40px; /* Add space between global sections */
+  }
+
+  .global-section h3 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .search-results-section {
+    margin-bottom: 40px;
+  }
+
+  .search-results-section h3 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .loading, .error {
+      text-align: center;
+      padding: 20px;
+      font-size: 1.2em;
+  }
+  
+  .error {
+      color: #f44336;
+  }
+
+  .played-at {
+    margin-left: auto; /* Pushes the timestamp to the right */
+    color: #888;
+    font-size: 0.9em;
+  }
+
+  .time-range-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .time-range-selector button {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .time-range-selector button.active {
+    background-color: #1db954;
+    color: white;
+    border-color: #1db954;
+  }
