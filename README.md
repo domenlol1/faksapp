@@ -1,6 +1,7 @@
 # Aplikacija za Prikaz Spotify Statistike
 
 Ta projekt je spletna aplikacija, zgrajena z ogrodjem React, ki uporabnikom omogoča pregled njihovih osebnih glasbenih statistik s pomočjo Spotify Web API-ja. Aplikacija ponuja vpogled v najbolj poslušane izvajalce, pesmi, žanre in zgodovino predvajanja.
+Link do aplikacije: https://faksapp-35376630-47413.web.app/
 
 ## Funkcionalnosti
 

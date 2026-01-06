@@ -6,6 +6,17 @@ import './App.css';
 
 const ADMIN_EMAIL = 'domenkola@gmail.com';
 
+// Helper function to format the playback timestamp
+const formatPlayedAt = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+};
+
 export default function App() {
   const [token, setToken] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
@@ -206,7 +217,7 @@ export default function App() {
 
   if (!token && !loading) return <SpotifyLogin />;
 
-  const TrackItem = ({ track, index, onAdd, onRemove, showAdd, showRemove }) => (
+  const TrackItem = ({ track, index, onAdd, onRemove, showAdd, showRemove, playedAt }) => (
       track && <li key={track.id + (index ?? '')} className="list-item">
           {typeof index === 'number' && <span className="list-item-index">{index + 1}.</span>}
           <img src={track.album?.images[0]?.url} alt={track.name} className="list-item-image" />
@@ -214,7 +225,11 @@ export default function App() {
               <p className="track-name">{track.name}</p>
               <p className="track-artist">{(track.artists || []).map(a => a.name).join(', ')}</p>
           </div>
-          <span className="track-release-date">{track.album.release_date}</span>
+          {playedAt ? (
+              <span className="played-at">{formatPlayedAt(playedAt)}</span>
+          ) : (
+            <span className="track-release-date">{track.album.release_date}</span>
+          )}
           {showAdd && <button onClick={() => onAdd(track)} className="add-button" title="Dodaj v playlisto">+</button>}
           {showRemove && <button onClick={() => onRemove(track.id)} className="remove-button" title="Odstrani iz playliste">-</button>}
       </li>
@@ -334,7 +349,7 @@ export default function App() {
                     <h2 className="content-title">Nazadnje Predvajano</h2>
                     {recentlyPlayed.length > 0 ? (
                         <ul className="list">
-                            {recentlyPlayed.filter(item => item.track).map(({ track, played_at }) => <TrackItem key={played_at + track.id} track={track} onAdd={handleAddToPlaylist} showAdd={true} />)}
+                            {recentlyPlayed.filter(item => item.track).map(({ track, played_at }) => <TrackItem key={played_at + track.id} track={track} playedAt={played_at} onAdd={handleAddToPlaylist} showAdd={true} />)}
                         </ul>
                     ) : <p>Zgodovina predvajanja ni na voljo.</p>}
                 </div>
@@ -373,7 +388,7 @@ export default function App() {
                         <ul className="list">
                             {myPlaylist.map((track, index) => <TrackItem key={track.id} track={track} index={index} onRemove={handleRemoveFromPlaylist} showRemove={true} />)}
                         </ul>
-                    ) : <p>Tvoja playlista je prazna. Dodaj pesmi s klikom na gumb '+'.</p>}
+                    ) : <p>Tvoja playlista je prazna. Dodaj pesmi s klikom na gumb '+'</p>}
                 </div>
             );
         case 'admin':
