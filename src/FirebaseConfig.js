@@ -3,15 +3,17 @@
 
 import { initializeApp } from "firebase/app";
 import { getFunctions } from "firebase/functions";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBHJjzIol6VOpyFFJMhdGEbDFjd16IVtZo",
-  authDomain: "faksapp-a6407.firebaseapp.com",
-  projectId: "faksapp-a6407",
-  storageBucket: "faksapp-a6407.firebasestorage.app",
-  messagingSenderId: "411157253911",
-  appId: "1:411157253911:web:75e9d6271a684817503152",
+  projectId: "faksapp-35376630-47413",
+  appId: "1:473280044617:web:eccc67c1d3b288e57ae998",
+  storageBucket: "faksapp-35376630-47413.firebasestorage.app",
+  apiKey: "AIzaSyD0C24Xm65MPjOzGxDUzTxbDlfhM7co3bs",
+  authDomain: "faksapp-35376630-47413.firebaseapp.com",
+  messagingSenderId: "473280044617",
 };
 
 const app = initializeApp(firebaseConfig);
 export const functions = getFunctions(app);
+export const db = getFirestore(app);

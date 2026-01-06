@@ -1,200 +1,312 @@
+/* Osnovni stili */
 body {
-    font-family: sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #121212; /* Temno siva */
+    color: #ffffff;
     margin: 0;
     padding: 0;
-  }
-  
-  .container {
-    max-width: 800px;
+}
+
+.container {
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-  }
-  
-  .header {
+}
+
+/* Glava */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .profile-section {
+    padding: 20px 0;
+    border-bottom: 1px solid #282828;
+}
+
+.header h1 {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.profile-section {
     display: flex;
     align-items: center;
-    gap: 15px;
-  }
-  
-  .profile-image {
+}
+
+.profile-image {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-  }
+    margin-right: 15px;
+    object-fit: cover; /* Preprečuje popačenje */
+}
 
-  .profile-name {
+.profile-name {
     font-weight: bold;
-  }
-  
-  .logout-button {
-    background-color: #f44336;
+    margin-right: 20px;
+}
+
+.logout-button {
+    background-color: #1aa34a; /* Temnejša zelena */
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  .search-bar-container {
-    margin-bottom: 20px;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 12px 20px;
-    border-radius: 50px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
-  }
-  
-  .navigation {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-  }
-  
-  .navigation button {
-    background: none;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .navigation button.active {
-    border-bottom: 2px solid #1db954;
-    font-weight: bold;
-  }
-  
-  .main-content .content-title {
-      font-size: 1.5em;
-      margin-bottom: 1em;
-  }
-  
-  .list {
-      list-style: none;
-      padding: 0;
-  }
-  
-  .list-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      background-color: #fff;
-      padding: 10px;
-      border-radius: 5px;
-  }
-  
-  .list-item-index {
-      font-weight: bold;
-      margin-right: 15px;
-  }
-  
-  .list-item-image {
-      width: 50px;
-      height: 50px;
-      margin-right: 15px;
-      border-radius: 5px;
-  }
-  
-  .artist-image {
-      border-radius: 50%;
-  }
-  
-  .track-details {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1; /* Allow track details to take up available space */
-  }
-  
-  .track-name {
-      font-weight: bold;
-  }
-  
-  .track-artist {
-      color: #666;
-  }
-  
-  .genre-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-  }
-  
-  .genre-item {
-      list-style: none;
-      background-color: #1db954;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 15px;
-  }
-
-  .global-section {
-    margin-bottom: 40px; /* Add space between global sections */
-  }
-
-  .global-section h3 {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-
-  .search-results-section {
-    margin-bottom: 40px;
-  }
-
-  .search-results-section h3 {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .loading, .error {
-      text-align: center;
-      padding: 20px;
-      font-size: 1.2em;
-  }
-  
-  .error {
-      color: #f44336;
-  }
-
-  .played-at {
-    margin-left: auto; /* Pushes the timestamp to the right */
-    color: #888;
-    font-size: 0.9em;
-  }
-
-  .time-range-selector {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 10px;
-  }
-
-  .time-range-selector button {
-    background-color: #eee;
-    border: 1px solid #ddd;
-    padding: 8px 12px;
+    padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 14px;
-  }
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
 
-  .time-range-selector button.active {
-    background-color: #1db954;
+.logout-button:hover {
+    background-color: #1ed760;
+}
+
+/* Iskalna vrstica */
+.search-bar-container {
+    padding: 20px 0;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px;
+    background-color: #282828;
+    border: 1px solid #404040;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.search-input::placeholder {
+    color: #b3b3b3;
+}
+
+/* Navigacija */
+.navigation {
+    display: flex;
+    justify-content: flex-start; /* Poravnaj na levo za drsenje */
+    gap: 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #282828;
+    margin-bottom: 20px;
+    overflow-x: auto; /* Omogoči horizontalno drsenje */
+    white-space: nowrap; /* Prepreči, da bi gumbi šli v novo vrsto */
+
+    /* Skrij drsnik za boljši izgled */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.navigation::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}
+
+
+.navigation button {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    color: #b3b3b3;
+    padding: 10px 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 2px solid transparent; /* Prozorna črta za ohranjanje višine */
+    flex-shrink: 0; /* Prepreči krčenje gumbov */
+}
+
+.navigation button:last-child {
+    border-right: none; /* Odstrani črto pri zadnjem gumbu */
+}
+
+.navigation button:hover {
+    color: #ffffff;
+}
+
+.navigation button.active {
+    background-color: transparent; /* Brez ozadja */
+    color: #ffffff;
+    border-bottom: 2px solid #1ed760; /* Zelena črta pod aktivnim gumbom */
+}
+
+/* Glavna vsebina */
+.main-content {
+    padding: 20px 0;
+}
+
+.content-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+/* Seznami */
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+    margin-bottom: 10px;
+    background-color: #181818;
+}
+
+.list-item:hover {
+    background-color: #282828;
+}
+
+.list-item-index {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #b3b3b3;
+    margin-right: 20px;
+    width: 30px;
+}
+
+.list-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    margin-right: 20px;
+    object-fit: cover; /* Preprečuje popačenje */
+}
+
+.artist-image {
+    border-radius: 50%;
+}
+
+.list-item-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.track-details {
+    flex-grow: 1;
+}
+
+.track-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.track-artist {
+    color: #b3b3b3;
+    margin: 0;
+}
+
+.played-at, .track-release-date {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    margin-left: 20px;
+}
+
+
+/* Seznam žanrov */
+.genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 0;
+    list-style: none;
+}
+
+.genre-item {
+    background-color: #282828;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: capitalize;
+    transition: background-color 0.2s;
+}
+
+.genre-item:hover {
+    background-color: #383838;
+}
+
+/* Sporočila */
+.loading, .error {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 40px;
+}
+
+/* Admin plošča */
+.admin-list {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #282828;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.delete-button {
+    background-color: #e53e3e;
     color: white;
-    border-color: #1db954;
-  }
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+    background-color: #c53030;
+}
+
+/* Izbirnik časovnega ranga */
+.time-range-selector {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.time-range-selector button {
+    background-color: transparent;
+    border: 1px solid #535353;
+    color: #b3b3b3;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.time-range-selector button:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.time-range-selector button.active {
+    background-color: #1aa34a;
+    color: #ffffff;
+    border-color: #1aa34a;
+}
+
+.playlist-item {
+    cursor: pointer;
+}
+
+.playlist-item.selected {
+    background-color: #2a2a2a;
+    border-left: 4px solid #1ed760;
+    padding-left: 11px;
+}
+
+.playlist-tracks-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #282828;
+}

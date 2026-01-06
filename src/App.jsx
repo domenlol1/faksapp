@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import SpotifyLogin from "./SpotifyLogin.jsx";
+import { db } from './FirebaseConfig';
+import { collection, query, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import './App.css';
+
+const ADMIN_EMAIL = 'domenkola@gmail.com';
 
 export default function App() {
   const [token, setToken] = useState(null);
@@ -9,10 +13,9 @@ export default function App() {
   const [tracks, setTracks] = useState([]);
   const [genres, setGenres] = useState([]);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-  
-  const [globalTracks, setGlobalTracks] = useState([]);
-  const [globalArtists, setGlobalArtists] = useState([]);
-  const [globalGenres, setGlobalGenres] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+  const [playlistTracks, setPlaylistTracks] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
@@ -23,6 +26,9 @@ export default function App() {
   const [error, setError] = useState(null);
   const [activeView, setActiveView] = useState('artists');
 
+  const [pendingEmails, setPendingEmails] = useState([]);
+  const isAdmin = userProfile?.email === ADMIN_EMAIL;
+
   const logout = useCallback(() => {
     setToken(null);
     localStorage.removeItem('spotify_token');
@@ -31,15 +37,36 @@ export default function App() {
     setTracks([]);
     setGenres([]);
     setRecentlyPlayed([]);
-    setGlobalTracks([]);
-    setGlobalArtists([]);
-    setGlobalGenres([]);
+    setPlaylists([]);
+    setSelectedPlaylist(null);
+    setPlaylistTracks([]);
     setSearchQuery("");
     setSearchResults(null);
     setError(null);
     setActiveView('artists');
     setLoading(false);
   }, []);
+
+  const fetchData = useCallback(async (url, formatter) => {
+      if (!token) return null;
+      try {
+          const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+          if (response.status === 401) {
+              logout();
+              return null;
+          }
+          if (!response.ok) {
+              console.error(`Request failed for ${url} with status: ${response.status}`);
+              return null;
+          }
+          const data = await response.json();
+          return formatter(data);
+      } catch (err) {
+          console.error(`Failed to fetch from ${url}:`, err);
+          setError("Network error. Please check your connection.");
+          return null;
+      }
+  }, [token, logout]);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('spotify_token');
@@ -73,31 +100,13 @@ export default function App() {
     if (!token) return;
     setLoading(true);
     setError(null);
-
-    const fetchData = async (url, formatter) => {
-        try {
-            const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            if (response.status === 401) {
-                logout();
-                return null;
-            }
-            if (!response.ok) {
-                console.error(`Request failed for ${url} with status: ${response.status}`);
-                return null;
-            }
-            const data = await response.json();
-            return formatter(data);
-        } catch (err) {
-            console.error(`Failed to fetch from ${url}:`, err);
-            return null;
-        }
-    };
     
-    const [profile, topArtists, topTracks, recentTracks] = await Promise.all([
+    const [profile, topArtists, topTracks, recentTracks, userPlaylists] = await Promise.all([
         fetchData("https://api.spotify.com/v1/me", data => data),
         fetchData(`https://api.spotify.com/v1/me/top/artists?time_range=${timeRange}&limit=10`, data => data.items || []),
         fetchData(`https://api.spotify.com/v1/me/top/tracks?time_range=${timeRange}&limit=10`, data => data.items || []),
         fetchData("https://api.spotify.com/v1/me/player/recently-played?limit=50", data => data.items || []),
+        fetchData("https://api.spotify.com/v1/me/playlists?limit=50", data => data.items || [])
     ]);
 
     if (profile) setUserProfile(profile);
@@ -107,32 +116,31 @@ export default function App() {
     }
     if (topTracks) setTracks(topTracks);
     if (recentTracks) setRecentlyPlayed(recentTracks);
-
-    const globalPlaylistId = '37i9dQZEVXbMDoHDwVN2tF';
-    const globalTracksData = await fetchData(`https://api.spotify.com/v1/playlists/${globalPlaylistId}/tracks?limit=10`, data => (data.items || []).map(item => item.track).filter(Boolean));
-
-    if (globalTracksData && globalTracksData.length > 0) {
-        setGlobalTracks(globalTracksData);
-        const artistIds = [...new Set(globalTracksData.flatMap(track => track.artists.map(artist => artist.id)))].slice(0, 50);
-        
-        if (artistIds.length > 0) {
-            const artistsDetails = await fetchData(`https://api.spotify.com/v1/artists?ids=${artistIds.join(',')}`, data => data.artists || []);
-            if (artistsDetails) {
-                const validArtists = artistsDetails.filter(Boolean);
-                setGlobalArtists(validArtists);
-                setGlobalGenres([...new Set(validArtists.flatMap(artist => artist.genres))]);
-            }
-        }
-    }
+    if (userPlaylists) setPlaylists(userPlaylists);
 
     setLoading(false);
-  }, [token, logout, timeRange]);
+  }, [token, timeRange, fetchData]);
 
   useEffect(() => {
     if (token) {
       fetchSpotifyData();
     }
   }, [token, fetchSpotifyData]);
+
+  const handlePlaylistClick = async (playlist) => {
+      if (selectedPlaylist?.id === playlist.id) {
+          setSelectedPlaylist(null);
+          setPlaylistTracks([]);
+      } else {
+          setLoading(true);
+          setSelectedPlaylist(playlist);
+          const tracksData = await fetchData(playlist.tracks.href, data => (data.items || []).map(item => item.track).filter(Boolean));
+          if (tracksData) {
+              setPlaylistTracks(tracksData);
+          }
+          setLoading(false);
+      }
+  };
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -151,6 +159,28 @@ export default function App() {
     const debounceTimeout = setTimeout(() => { handleSearch(); }, 300);
     return () => clearTimeout(debounceTimeout);
   }, [searchQuery, token, logout]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      const q = query(collection(db, 'pending_users'));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const emails = [];
+        querySnapshot.forEach((doc) => {
+          emails.push({ id: doc.id, ...doc.data() });
+        });
+        setPendingEmails(emails);
+      });
+      return () => unsubscribe();
+    }
+  }, [isAdmin]);
+
+  const handleDeleteEmail = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'pending_users', id));
+    } catch (error) {
+      console.error('Error deleting email: ', error);
+    }
+  };
 
   if (!token && !loading) return <SpotifyLogin />;
 
@@ -187,6 +217,7 @@ export default function App() {
                                       <p className="track-name">{track.name}</p>
                                       <p className="track-artist">{track.artists.map(a => a.name).join(', ')}</p>
                                   </div>
+                                  <span className="track-release-date">{track.album.release_date}</span>
                               </li>
                           ))}
                       </ul>
@@ -243,6 +274,7 @@ export default function App() {
                          <p className="track-name">{track.name}</p>
                          <p className="track-artist">{track.artists.map(a => a.name).join(', ')}</p>
                        </div>
+                       <span className="track-release-date">{track.album.release_date}</span>
                      </li>
                   ))}
                 </ul>
@@ -281,61 +313,72 @@ export default function App() {
                                               <p className="track-artist">{track.artists.map(a => a.name).join(', ')}</p>
                                           </div>
                                           <span className="played-at">{new Date(played_at).toLocaleString()}</span>
+                                           <span className="track-release-date">{track.album.release_date}</span>
                                       </li>
                                   ))}
                           </ul>
                       ) : <p>Ni mogoče naložiti zgodovine predvajanja.</p>}
                   </div>
               );
-          case 'global':
-              return (
-                  <div>
-                      <h2 className="content-title">Globalne Lestvice</h2>
-                      <div className="global-section">
-                          <h3>Top 10 Pesmi na Svetu</h3>
-                          {globalTracks.length > 0 ? (
-                              <ul className="list">
-                                  {globalTracks.map((track, index) => (
-                                      <li key={track.id} className="list-item">
-                                          <span className="list-item-index">{index + 1}.</span>
-                                          <img src={track.album.images[0]?.url} alt={track.name} className="list-item-image" />
-                                          <div className="track-details">
-                                              <p className="track-name">{track.name}</p>
-                                              <p className="track-artist">{track.artists.map(a => a.name).join(', ')}</p>
-                                          </div>
-                                      </li>
-                                  ))}
-                              </ul>
-                          ) : <p>Globalne pesmi trenutno niso na voljo.</p>}
-                      </div>
-                      <div className="global-section">
-                          <h3>Top 10 Izvajalcev na Svetu</h3>
-                          {globalArtists.length > 0 ? (
-                               <ul className="list">
-                                  {globalArtists.slice(0, 10).map((artist, index) => (
-                                  <li key={artist.id} className="list-item">
-                                      <span className="list-item-index">{index + 1}.</span>
-                                      <img src={artist.images[0]?.url} alt={artist.name} className="list-item-image artist-image" />
-                                      <span className="list-item-name">{artist.name}</span>
-                                  </li>
-                                  ))}
-                              </ul>
-                          ) : <p>Globalni izvajalci trenutno niso na voljo.</p>}
-                      </div>
-                      <div className="global-section">
-                          <h3>Top 10 Žanrov na Svetu</h3>
-                          {globalGenres.length > 0 ? (
-                               <div className="genre-list">
-                                  {globalGenres.slice(0, 10).map(genre => (
-                                    <li key={genre} className="genre-item">
-                                      {genre}
+            case 'playlists':
+                return (
+                    <div>
+                        <h2 className="content-title">Tvoji Seznami Predvajanja</h2>
+                        {playlists.length > 0 ? (
+                            <ul className="list">
+                                {playlists.map(playlist => (
+                                    <li key={playlist.id} className={`list-item playlist-item ${selectedPlaylist?.id === playlist.id ? 'selected' : ''}`} onClick={() => handlePlaylistClick(playlist)}>
+                                        <img src={playlist.images[0]?.url} alt={playlist.name} className="list-item-image" />
+                                        <div className="track-details">
+                                            <p className="track-name">{playlist.name}</p>
+                                            <p className="track-artist">{playlist.tracks.total} pesmi</p>
+                                        </div>
                                     </li>
-                                  ))}
-                              </div>
-                          ) : <p>Globalni žanri trenutno niso na voljo.</p>}
-                      </div>
-                  </div>
-              );
+                                ))}
+                            </ul>
+                        ) : <p>Nimate nobenih seznamov predvajanja.</p>}
+                        {selectedPlaylist && (
+                            <div className="playlist-tracks-section">
+                                <h3>Pesmi v: {selectedPlaylist.name}</h3>
+                                {loading ? <p className="loading">Nalaganje pesmi...</p> : 
+                                  playlistTracks.length > 0 ? (
+                                      <ul className="list">
+                                          {playlistTracks.map((track, index) => (
+                                              track && <li key={track.id + index} className="list-item">
+                                                  <span className="list-item-index">{index + 1}.</span>
+                                                  <img src={track.album?.images[0]?.url} alt={track.name} className="list-item-image" />
+                                                  <div className="track-details">
+                                                      <p className="track-name">{track.name}</p>
+                                                      <p className="track-artist">{track.artists.map(a => a.name).join(', ')}</p>
+                                                  </div>
+                                                  <span className="track-release-date">{track.album.release_date}</span>
+                                              </li>
+                                          ))}
+                                      </ul>
+                                  ) : <p>Ta seznam predvajanja je prazen.</p>
+                                }
+                            </div>
+                        )}
+                    </div>
+                );
+        case 'admin':
+          return (
+            <div>
+              <h2 className="content-title">Čakajoči uporabniki</h2>
+              {pendingEmails.length > 0 ? (
+                <ul className="admin-list">
+                  {pendingEmails.map(email => (
+                    <li key={email.id} className="admin-list-item">
+                      <span>{email.email}</span>
+                      <button onClick={() => handleDeleteEmail(email.id)} className="delete-button">
+                        Dodaj in zbriši
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : <p>Ni čakajočih uporabnikov.</p>}
+            </div>
+          );
         default:
             return null;
     }
@@ -381,9 +424,14 @@ export default function App() {
         <button onClick={() => { setSearchQuery(''); setActiveView('recently-played'); }} className={activeView === 'recently-played' && !searchQuery ? 'active' : ''}>
           Nedavno Predvajano
         </button>
-        <button onClick={() => { setSearchQuery(''); setActiveView('global'); }} className={activeView === 'global' && !searchQuery ? 'active' : ''}>
-          Globalno
+        <button onClick={() => { setSearchQuery(''); setActiveView('playlists'); setSelectedPlaylist(null); }} className={activeView === 'playlists' && !searchQuery ? 'active' : ''}>
+          Seznami predvajanja
         </button>
+        {isAdmin && (
+          <button onClick={() => { setSearchQuery(''); setActiveView('admin'); }} className={activeView === 'admin' && !searchQuery ? 'active' : ''}>
+            Administrator
+          </button>
+        )}
       </nav>
 
       <main className="main-content">
