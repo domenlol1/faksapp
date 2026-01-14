@@ -1,4 +1,4 @@
-# Aplikacija za Prikaz Spotify Statistike
+# Aplikacija za prikaz Spotify statistike
 
 Ta projekt je spletna aplikacija, zgrajena z ogrodjem React, ki uporabnikom omogoča pregled njihovih osebnih glasbenih statistik s pomočjo Spotify Web API-ja. Aplikacija ponuja vpogled v najbolj poslušane izvajalce, pesmi, žanre in zgodovino predvajanja.
 Link do aplikacije: https://faksapp-35376630-47413.web.app/
@@ -20,24 +20,24 @@ Link do aplikacije: https://faksapp-35376630-47413.web.app/
 *   **Backend & Avtentikacija:** Firebase (Firestore za bazo podatkov) in Spotify Web API.
 *   **Gostovanje:** Firebase Hosting
 
-## Avtentikacija in Avtorizacija
+## Avtentikacija in avtorizacija
 
 Aplikacija uporablja kombinacijo sistema za odobritev po meri in standardnega protokola OAuth 2.0, ki ga zahteva Spotify. Postopek je zasnovan tako, da imajo do aplikacije dostop le preverjeni uporabniki.
 
-### 1. Postopek za Novega Uporabnika
+### 1. Postopek za novega uporabnika
 
 Ker je dostop do podatkov omejen, mora nov uporabnik najprej zaprositi za dostop:
 1.  Na prijavni strani uporabnik vpiše svoj e-poštni naslov, s katerim je registriran na Spotify.
 2.  Ta e-poštni naslov se shrani v **Firebase Firestore** zbirko z imenom `pending_users`.
 
-### 2. Skrbniško Upravljanje
+### 2. Skrbniško upravljanje
 
 Administrator aplikacije (dodeljen s statičnim e-poštnim naslovom v kodi) ima dostop do posebnega zavihka "Administrator":
 1.  V tem zavihku se izpišejo vsi e-poštni naslovi iz zbirke `pending_users`.
 2.  Administrator ročno preveri uporabnika in ga nato **doda na seznam pooblaščenih uporabnikov v nadzorni plošči Spotify Developer Dashboarda**.
 3.  S klikom na gumb "Dodaj in zbriši" se uporabnikov e-naslov odstrani iz čakalnega seznama v Firestore bazi.
 
-### 3. Tehnični Potek Prijave (OAuth 2.0)
+### 3. Tehnični potek prijave (OAuth 2.0)
 
 Ko je uporabnik odobren s strani administratorja, se lahko prijavi:
 1.  Uporabnik klikne na gumb **"PRIJAVI SE S SPOTIFY"**.
