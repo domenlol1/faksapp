@@ -42,6 +42,8 @@ export default function App() {
       const saved = localStorage.getItem('my_spotify_playlist');
       return saved ? JSON.parse(saved) : [];
   });
+  const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
+
 
   useEffect(() => {
     localStorage.setItem('my_spotify_playlist', JSON.stringify(myPlaylist));
@@ -270,7 +272,7 @@ export default function App() {
                                   <img src={artist.images[0]?.url} alt={artist.name} className="list-item-image artist-image" />
                                   <span className="list-item-name">{artist.name}</span>
                               </li>
-                          ))}
+                          ))}\
                       </ul>
                   ) : <p>Noben izvajalec ne ustreza iskanju.</p>}
               </div>
@@ -298,39 +300,43 @@ export default function App() {
             </div>
           );
         case 'tracks':
-          return (
-            <div className="tracks-view-container">
-                <aside className="artist-filter-sidebar">
-                    <h3>Filter po izvajalcih</h3>
-                    <ul className="filter-list">
-                        {artists.slice(0, 10).map(artist => (
-                            <li key={artist.id} className="filter-item">
-                                <input type="checkbox" id={`artist-${artist.id}`} checked={selectedArtists.has(artist.id)} onChange={() => handleArtistSelection(artist.id)} />
-                                <label htmlFor={`artist-${artist.id}`}>{artist.name}</label>
-                            </li>
-                        ))}
-                    </ul>
-                    <h3 className="filter-title-spacing">Filter po žanrih</h3>
-                    <ul className="filter-list">
-                        {genres.slice(0, 5).map(genre => (
-                            <li key={genre} className="filter-item">
-                                <input type="checkbox" id={`genre-${genre}`} checked={selectedGenres.has(genre)} onChange={() => handleGenreSelection(genre)} />
-                                <label htmlFor={`genre-${genre}`}>{genre}</label>
-                            </li>
-                        ))}
-                    </ul>
-                </aside>
-                <div className="tracks-content">
-                    <h2 className="content-title">Tvoje Top 25 Pesmi</h2>
-                    {renderTimeRangeSelector()}
-                    {filteredTracks.length > 0 ? (
-                        <ul className="list">
-                            {filteredTracks.map((track, index) => <TrackItem key={track.id} track={track} index={index} onAdd={handleAddToPlaylist} showAdd={true} />)}
+            return (
+                <div className="tracks-view-container">
+                    <button className="filter-toggle-button" onClick={() => setIsFilterSidebarOpen(!isFilterSidebarOpen)}>
+                        Filtri
+                    </button>
+                    <aside className={`artist-filter-sidebar ${isFilterSidebarOpen ? 'open' : ''}`}>
+                        <button className="close-sidebar-button" onClick={() => setIsFilterSidebarOpen(false)}>X</button>
+                        <h3>Filter po izvajalcih</h3>
+                        <ul className="filter-list">
+                            {artists.slice(0, 10).map(artist => (
+                                <li key={artist.id} className="filter-item">
+                                    <input type="checkbox" id={`artist-${artist.id}`} checked={selectedArtists.has(artist.id)} onChange={() => handleArtistSelection(artist.id)} />
+                                    <label htmlFor={`artist-${artist.id}`}>{artist.name}</label>
+                                </li>
+                            ))}
                         </ul>
-                    ) : <p>Nobena pesem ne ustreza izbranim filtrom.</p>}
+                        <h3 className="filter-title-spacing">Filter po žanrih</h3>
+                        <ul className="filter-list">
+                            {genres.slice(0, 5).map(genre => (
+                                <li key={genre} className="filter-item">
+                                    <input type="checkbox" id={`genre-${genre}`} checked={selectedGenres.has(genre)} onChange={() => handleGenreSelection(genre)} />
+                                    <label htmlFor={`genre-${genre}`}>{genre}</label>
+                                </li>
+                            ))}
+                        </ul>
+                    </aside>
+                    <div className="tracks-content">
+                        <h2 className="content-title">Tvoje Top 25 Pesmi</h2>
+                        {renderTimeRangeSelector()}
+                        {filteredTracks.length > 0 ? (
+                            <ul className="list">
+                                {filteredTracks.map((track, index) => <TrackItem key={track.id} track={track} index={index} onAdd={handleAddToPlaylist} showAdd={true} />)}
+                            </ul>
+                        ) : <p>Nobena pesem ne ustreza izbranim filtrom.</p>}
+                    </div>
                 </div>
-            </div>
-          );
+            );
         case 'genres':
           return (
             <div>
@@ -365,7 +371,7 @@ export default function App() {
                                     <img src={p.images[0]?.url} alt={p.name} className="list-item-image" />
                                     <div className="track-details"><p className="track-name">{p.name}</p><p className="track-artist">{p.tracks.total} pesmi</p></div>
                                 </li>
-                            ))}
+                            ))}\
                         </ul>
                     ) : <p>Nimate seznamov predvajanja.</p>}
                     {selectedPlaylist && (
@@ -377,7 +383,7 @@ export default function App() {
                                 ) : <p>Ta seznam je prazen.</p>
                             }
                         </div>
-                    )}
+                    )}\
                 </div>
             );
         case 'my-playlist':

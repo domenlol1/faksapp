@@ -403,3 +403,78 @@ body {
 .search-results-section {
     margin-bottom: 30px;
 }
+
+.filter-toggle-button {
+    display: none; /* Skrito na večjih zaslonih */
+}
+
+.close-sidebar-button {
+    display: none; /* Skrito na večjih zaslonih */
+}
+
+@media (max-width: 768px) {
+    .tracks-view-container {
+        flex-direction: column;
+    }
+
+    .artist-filter-sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        height: 100%;
+        width: 80%;
+        max-width: 300px;
+        background-color: rgba(24, 24, 24, 0.95); /* Posodobljeno ozadje */
+        backdrop-filter: blur(5px); /* Dodan učinek zameglitve */
+        z-index: 1000;
+        transition: left 0.3s ease-in-out;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    }
+
+    .artist-filter-sidebar.open {
+        left: 0;
+    }
+
+    .filter-toggle-button {
+        display: flex; /* Spremenjeno za lažje centriranje */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1001;
+        background-color: #1ed760;
+        color: white;
+        border: none;
+        width: 70px; /* Povečan gumb */
+        height: 50px;
+        border-radius: 25px; /* Zaobljeni robovi */
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        font-size: 1rem;
+        font-weight: bold;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .filter-toggle-button:hover {
+        background-color: #1aa34a;
+        transform: scale(1.05);
+    }
+
+    .close-sidebar-button {
+        display: block;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .tracks-content {
+        width: 100%;
+    }
+}
